@@ -55,12 +55,12 @@ object MessageSocket {
       cs: ContextShift[F],
       asg: AsynchronousSocketGroup
   ): Resource[F, MessageSocket[F]] =
-    Socket[F](address = new InetSocketAddress(port)).evalMap(
-      socket =>
+    Socket[F](address = new InetSocketAddress(port))
+      .evalMap { socket =>
         for {
           logger <- Slf4jLogger.fromClass[F](getClass)
         } yield new MessageSocket(socket, logger)
-    )
+      }
 
   object Error {
     case class BecodeSerialization(err: Err) extends Throwable(err.messageWithContext)
